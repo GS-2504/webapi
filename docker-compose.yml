@@ -1,1 +1,29 @@
-﻿
+﻿version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver-container
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourPassword123
+    ports:
+      - "1433:1433"
+    networks:
+      - la-network
+
+  webapi:
+    build: .
+    container_name: la-container
+    ports:
+      - "8080:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - la-network
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabase;User Id=sa;Password=YourPassword123;
+
+networks:
+  la-network:
+    driver: bridge
