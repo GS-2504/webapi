@@ -10,7 +10,7 @@ services:
     ports:
       - "1433:1433"
     networks:
-      - la-network
+      - jenkins-network
 
   webapi:
     build: .
@@ -20,10 +20,20 @@ services:
     depends_on:
       - sqlserver
     networks:
-      - la-network
+      - jenkins-network
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourDatabase;User Id=sa;Password=YourPassword123;
 
+  angularapp:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: angular-container
+    ports:
+      - "4200:80"
+    networks:
+      - jenkins-network
+
 networks:
-  la-network:
+  jenkins-network:
     driver: bridge
